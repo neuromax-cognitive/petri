@@ -221,11 +221,11 @@ citations audited against the literature, limitations kept public.
 | phase | content | exit criterion | status |
 |---|---|---|---|
 | 0 | ci, run_all.sh, frozen csv contract, results/ | make test green, one command reproduction | done |
-| 1 | calibration sweep to the target phenotype vector | t1 gates pass on 8 of 10 seeds, calibration.md | open |
-| 2 | literature validation table (yemini 2013, wen 2012, kunert 2017) | validate.py emits match and mismatch rows | open |
-| 3 | flagship: ablation matrix, proprioceptive gain sweep, tap habituation fit, cross connectome a/b/c | figures in results/, experiments.md | open |
-| 4 | associative conditioning protocol | paired vs control preference curve | open |
-| 5 | methods draft, benchmark note, zenodo doi, CITATION.cff | citable v1.0 | open |
+| 1 | calibration sweep to the target phenotype vector | t1 gates pass on 8 of 10 seeds, calibration.md | harness done, criterion red: speed and amplitude below literature, see validation.md |
+| 2 | literature validation table (yemini 2013, wen 2012, kunert 2017) | validate.py emits match and mismatch rows | done: 1 match 4 mismatch, honest |
+| 3 | flagship: ablation matrix, proprioceptive gain sweep, tap habituation fit, cross connectome a/b/c | figures in results/, experiments.md | done as harness, biological claims pending phase 1 criterion |
+| 4 | associative conditioning protocol | paired vs control preference curve | protocol done, honest null: ci 0.000 all arms |
+| 5 | methods draft, benchmark note, zenodo doi, CITATION.cff | citable v1.0 | drafts done, tagged v0.1.0, zenodo upload is manual |
 
 non goals, deliberately: 3d mechanics, spikes, python bindings, gui,
 openworm integration, new neuron classes, wasm. they would kill the
