@@ -67,7 +67,7 @@ static const float MN_CHAIN_GAP_W = 0.5f;    /* electrotonic chain weight along 
 
 /* endogenous activity of the command circuit, mv of standing bias current.
    graded whole animal models need avb near the sigmoid midpoint or the
-   proprioceptive loop has no gain to work with, kunert 2017, izquierdo 2015 */
+   proprioceptive loop has no gain to work with, kunert 2017, boyle 2012 */
 static const float BIAS_AVB_MV    = 4.0f;
 static const float BIAS_AVA_MV    = 0.0f;   /* ava is command driven, no endogenous drive */
 static const float NMJ_SIGMA_SEG  = 0.8f;    /* spatial spread of one mn onto muscle bands */

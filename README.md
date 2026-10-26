@@ -187,7 +187,11 @@ mechanosensory synapses on contact. graded, no mode switches.
 - the cpg was redesigned around a stretch reflex oscillator with a
   headward copy (tools/cpg_scan.py, design scan): the wave now travels
   head to tail with a measured head lead of 0.2 s and wavelength near one
-  body length (head tail corr -0.77, builtin net, seed 1). open gaps:
+  body length (head tail corr -0.77, builtin net, seed 1). architecture
+  follows the proprioceptive wave mechanism of wen 2012 and kunert 2017,
+  arrived at independently through the scan. the ava gating of a class
+  proprioception is our assumption, not literature.
+  open gaps:
   wave amplitude saturates near 1 1/mm, an order below what thrust needs,
   and the tail carries a static 2 1/mm dorsal bias that eats muscle range.
   net displacement is still ~0.4 mm per 60 s against 12 to 24 mm for a

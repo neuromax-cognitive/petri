@@ -144,7 +144,7 @@ static void build_csr(connectome_t* c)
 }
 
 static const struct { const char* s, *d; int kind; float w; int dly; } BUILTIN_EDGES[] = {
-    /* appetitive chemotaxis path, wes and bargmann 2001, iino and yoshida 2009 */
+    /* appetitive chemotaxis path, wes and bargmann 2001 */
     { "AWAL", "AIAL", SYN_EXC, 3.0f, 2 },
     { "AWAL", "AIYL", SYN_EXC, 2.0f, 2 },
     { "AWAR", "AIAL", SYN_EXC, 3.0f, 2 },

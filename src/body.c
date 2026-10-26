@@ -122,7 +122,8 @@ void body_proprioception(body_t* b, nervous_t* ns)
                 drive = d < 0.0f ? -d : 0.0f;
         }
         c = &ns->cells[b->mm.idx[m]];
-        /* a class proprioception is gated by the ava command, without it the
+        /* assumption: a class proprioception gated by the ava command is
+           circuit design, not a literature fact. without the gate the
            reverse copy reads the crest that has not arrived yet and fights
            the forward wave in antiphase */
         if (cls == MC_DA || cls == MC_VA) {
