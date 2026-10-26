@@ -1,5 +1,21 @@
 # calibration log, phase 1
 
+## round 4, the dish got walls
+
+the worm could walk through the assay plate rim and off the arena,
+where the wall contact flag stayed true forever and the constant
+aversive drive froze it. the rim is now a hard wall, the frame cannot
+penetrate it and the contact band feeds ash one cell before the stop.
+this is correct physics and it changed the phenotype: wall bounces
+flip seeds between a slow gait near the speed floor and a fast gait
+near the ceiling, drag was re-tuned to 19 which keeps the fast mode
+at the 0.30 ceiling and the battery reads 4 of 10. phase 1 criterion
+is re-opened on the bounded dish. the actual blocker is the known
+reversal duration defect, tens of seconds instead of about one: long
+reversals at walls are what throw the gait across modes. fixing the
+reversal release is the next calibration target and should fix both
+the validation mismatch and this battery.
+
 ## round 3, after the rng stream fix
 
 the pool initializer drew a random start potential for every cell of

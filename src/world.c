@@ -112,15 +112,18 @@ void world_step(world_t* w, body_t* b, float dt_ms)
     int headx = cell_ix(b->x[0]);
     int heady = cell_iy(b->y[0]);
 
-    /* walls are the rim of the assay plate */
+    /* walls are the rim of the assay plate, the contact band is one cell
+       wider than the hard stop so the touch sensors fire while the nose
+       still has a hair of travel left */
     b->nose_contact =
-        (b->x[0] < WORLD_CELL_MM || b->y[0] < WORLD_CELL_MM ||
-         b->x[0] > WORLD_W_MM - WORLD_CELL_MM ||
-         b->y[0] > WORLD_H_MM - WORLD_CELL_MM);
+        (b->x[0] < 2.0f * WORLD_CELL_MM || b->y[0] < 2.0f * WORLD_CELL_MM ||
+         b->x[0] > WORLD_W_MM - 2.0f * WORLD_CELL_MM ||
+         b->y[0] > WORLD_H_MM - 2.0f * WORLD_CELL_MM);
     b->tail_contact =
-        (b->x[N_SEG] < WORLD_CELL_MM || b->y[N_SEG] < WORLD_CELL_MM ||
-         b->x[N_SEG] > WORLD_W_MM - WORLD_CELL_MM ||
-         b->y[N_SEG] > WORLD_H_MM - WORLD_CELL_MM);
+        (b->x[N_SEG] < 2.0f * WORLD_CELL_MM ||
+         b->y[N_SEG] < 2.0f * WORLD_CELL_MM ||
+         b->x[N_SEG] > WORLD_W_MM - 2.0f * WORLD_CELL_MM ||
+         b->y[N_SEG] > WORLD_H_MM - 2.0f * WORLD_CELL_MM);
 
     /* diffusion every 10 ms, concentration changes slowly relative to dt */
     w->diff_cnt++;

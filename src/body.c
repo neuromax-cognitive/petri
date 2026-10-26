@@ -3,6 +3,7 @@
 #include <string.h>
 #include "body.h"
 #include "config.h"
+#include "world.h"
 
 #define DS_MM (BODY_LEN_MM / (float)N_SEG)
 
@@ -317,6 +318,16 @@ void body_step(body_t* b, nervous_t* ns, float nmj_gain, float dt)
     /* integrate the rigid frame, then rebuild the global skeleton */
     b->head_x += b->vx * dt;
     b->head_y += b->vy * dt;
+    /* the assay plate has a plastic rim, the frame cannot penetrate it.
+       clamping the head point is the wall reaction, the shape keeps
+       moving so a worm that pushes into the wall slides along it while
+       the contact keeps feeding ash and alm */
+    if (b->head_x < WORLD_CELL_MM) b->head_x = WORLD_CELL_MM;
+    if (b->head_y < WORLD_CELL_MM) b->head_y = WORLD_CELL_MM;
+    if (b->head_x > WORLD_W_MM - WORLD_CELL_MM)
+        b->head_x = WORLD_W_MM - WORLD_CELL_MM;
+    if (b->head_y > WORLD_H_MM - WORLD_CELL_MM)
+        b->head_y = WORLD_H_MM - WORLD_CELL_MM;
     b->head_angle += b->omega * dt;
     b->last_drot = b->omega * dt;
     if (b->head_angle > 6.2831853f) b->head_angle -= 6.2831853f;
