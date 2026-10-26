@@ -10,7 +10,7 @@
 
 /* integration */
 static const float DT_MS          = 1.0f;    /* ode step, ms */
-static const float NOISE_SD_MV    = 1.2f;    /* membrane noise per sqrt step, mv */
+static const float NOISE_SD_MV    = 0.4f;    /* membrane noise per sqrt step, mv */
 
 /* graded membrane */
 static const float V_REST_MV      = -50.0f;  /* resting potential, mv */
@@ -58,16 +58,20 @@ static const float TAU_BEND_MS    = 110.0f;  /* cuticle viscoelastic relaxation,
 static const float BEND_GAIN      = 9.0f;    /* muscle differential to curvature gain */
 static const float DRAG_T         = 0.021f;  /* tangential drag per segment, uN*s/mm */
 static const float DRAG_RATIO     = 36.0f;   /* normal/tangential ratio on agar, gray and lissmann */
-static const float PROP_GAIN      = 1.5f;    /* proprioceptive drive into motor neurons, mv per 1/mm */
+static const float PROP_GAIN      = 8.0f;    /* proprioceptive drive into motor neurons, mv per 1/mm */
 static const int   PROP_LAG_SEG   = 3;       /* segments of spatial phase lag */
+static const float PROP_TAU_MS    = 150.0f;  /* proprioceptive read lag, ms */
+static const float PROP_SELF_W    = 1.0f;    /* own segment bend weight, relaxation oscillator */
+static const float PROP_BACK_W    = 1.2f;    /* neighbor copy weight, hands the flip on */
+static const float MN_CHAIN_GAP_W = 0.5f;    /* electrotonic chain weight along one motor class */
 
 /* endogenous activity of the command circuit, mv of standing bias current.
    graded whole animal models need avb near the sigmoid midpoint or the
    proprioceptive loop has no gain to work with, kunert 2017, izquierdo 2015 */
 static const float BIAS_AVB_MV    = 4.0f;
 static const float BIAS_AVA_MV    = 0.0f;   /* ava is command driven, no endogenous drive */
-static const float NMJ_SIGMA_SEG  = 1.6f;    /* spatial spread of one mn onto muscle bands */
-static const float NMJ_GAIN       = 2.4f;    /* motor activation to muscle activation */
+static const float NMJ_SIGMA_SEG  = 0.8f;    /* spatial spread of one mn onto muscle bands */
+static const float NMJ_GAIN       = 0.9f;    /* motor activation to muscle activation */
 static const float MUSCLE_TAU_MS  = 90.0f;   /* excitation contraction coupling, ms */
 
 /* sensory transduction */

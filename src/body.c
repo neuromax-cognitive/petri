@@ -89,12 +89,17 @@ static void build_shape(body_t* b, float head_ang, float* x, float* y)
  */
 void body_proprioception(body_t* b, nervous_t* ns)
 {
-    int m;
+    int m, i;
+    /* the receptor copy lags the real bend, a segment chases the bend of
+       ~tau ago and the chase overshoots into a traveling wave */
+    for (i = 0; i < N_SEG; i++) {
+        b->k_read[i] += (DT_MS / PROP_TAU_MS) * (b->k[i] - b->k_read[i]);
+    }
     for (m = 0; m < b->mm.n_mn; m++) {
         int seg = (int)(b->mm.pos[m] * (float)N_SEG);
         int cls = b->mm.mclass[m];
         int src;
-        float kontrast, drive = 0.0f;
+        float drive = 0.0f;
         neuron_t* c;
         if (seg < 0) seg = 0;
         if (seg > N_SEG - 1) seg = N_SEG - 1;
@@ -104,15 +109,27 @@ void body_proprioception(body_t* b, nervous_t* ns)
             src = seg + PROP_LAG_SEG;
         if (src < 0) src = 0;
         if (src > N_SEG - 1) src = N_SEG - 1;
-        kontrast = b->k[src] - b->k[seg];
-        switch (cls) {
-        case MC_DB: case MC_DD: drive = kontrast > 0.0f ?  kontrast : 0.0f; break;
-        case MC_VB: case MC_VD: drive = kontrast < 0.0f ? -kontrast : 0.0f; break;
-        case MC_DA:             drive = kontrast > 0.0f ?  kontrast : 0.0f; break;
-        case MC_VA:             drive = kontrast < 0.0f ? -kontrast : 0.0f; break;
-        default: drive = 0.0f; break;
+        /* push pull drive: the delayed own bend with negative sign is the
+           stretch reflex oscillator, the positive headward copy repeats the
+           neighbor bend a beat later and that is what makes the wave run
+           tailward. offline scan tools/cpg_scan.py: this is the only sign
+           combination with a linear phase gradient */
+        {
+            float d = PROP_BACK_W * b->k_read[src] - PROP_SELF_W * b->k_read[seg];
+            if (cls == MC_DB || cls == MC_DD || cls == MC_DA)
+                drive = d > 0.0f ? d : 0.0f;
+            else
+                drive = d < 0.0f ? -d : 0.0f;
         }
         c = &ns->cells[b->mm.idx[m]];
+        /* a class proprioception is gated by the ava command, without it the
+           reverse copy reads the crest that has not arrived yet and fights
+           the forward wave in antiphase */
+        if (cls == MC_DA || cls == MC_VA) {
+            int ava = nervous_find_prefix(ns, "AVA");
+            float gate = ava >= 0 ? neuron_act(&ns->cells[ava]) : 0.0f;
+            drive *= gate * gate;
+        }
         c->i_prop = PROP_GAIN * drive;
     }
 }

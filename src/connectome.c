@@ -264,13 +264,14 @@ int conn_load_builtin(connectome_t* c, nervous_t* ns)
         snprintf(dst, sizeof(dst), "VD%d", j);
         snprintf(src, sizeof(src), "VB%d", j);
         if (stage(c, ns, src, dst, SYN_EXC, 2.0f, 1) != 0) return -1;
-        /* electrotonic chains along each motor class spread activation */
+        /* electrotonic chains along each motor class spread activation,
+           chain weight sets how strongly neighbors phase lock */
         if (j < N_MN_PER_CLASS) {
             static const char* chained[] = { "DB", "VB", "DA", "VA", "DD", "VD" };
             for (cls = 0; cls < 6; cls++) {
                 snprintf(src, sizeof(src), "%s%d", chained[cls], j);
                 snprintf(dst, sizeof(dst), "%s%d", chained[cls], j + 1);
-                if (stage(c, ns, src, dst, SYN_GAP, 1.0f, 0) != 0) return -1;
+                if (stage(c, ns, src, dst, SYN_GAP, MN_CHAIN_GAP_W, 0) != 0) return -1;
             }
         }
     }

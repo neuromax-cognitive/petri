@@ -184,6 +184,11 @@ mechanosensory synapses on contact. graded, no mode switches.
   about the same level the touch path drives the a pools. candidates for
   closing the gap: evolution over the command weights (--evolve), or a
   longer mechanoreceptor relaxation constant
-- crawl direction on the builtin connectome varies by seed (ema speed
-  between roughly -0.2 and +0.1 mm/s), the a and b wave loops are close in
-  gain and the winner depends on initial noise
+- the cpg was redesigned around a stretch reflex oscillator with a
+  headward copy (tools/cpg_scan.py, design scan): the wave now travels
+  head to tail with a measured head lead of 0.2 s and wavelength near one
+  body length (head tail corr -0.77, builtin net, seed 1). open gaps:
+  wave amplitude saturates near 1 1/mm, an order below what thrust needs,
+  and the tail carries a static 2 1/mm dorsal bias that eats muscle range.
+  net displacement is still ~0.4 mm per 60 s against 12 to 24 mm for a
+  real animal, the amplitude regulation is the next problem

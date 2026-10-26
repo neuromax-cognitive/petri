@@ -279,6 +279,25 @@ void sim_step(sim_t* s)
             s->mec_trace = 0.0f;
     }
 
+
+#ifdef CE_LOOP_DEBUG
+    /* temporary loop instrumentation, enabled with -DCE_LOOP_DEBUG only */
+    if (((long)(s->t_ms)) % 100 == 0) {
+        int db5 = nervous_find_prefix(ns, "DB5");
+        int vb5 = nervous_find_prefix(ns, "VB5");
+        int dd5 = nervous_find_prefix(ns, "DD5");
+        int vd5 = nervous_find_prefix(ns, "VD5");
+        float kd6 = s->body.k[6], kd9 = s->body.k[9];
+        fprintf(stderr, "t=%5.0f k6=%7.3f k9=%7.3f db5=%5.3f vb5=%5.3f dd5=%5.3f vd5=%5.3f md10=%6.3f mv10=%6.3f\n",
+                s->t_ms, kd6, kd9,
+                db5 >= 0 ? neuron_act(&ns->cells[db5]) : -1,
+                vb5 >= 0 ? neuron_act(&ns->cells[vb5]) : -1,
+                dd5 >= 0 ? neuron_act(&ns->cells[dd5]) : -1,
+                vd5 >= 0 ? neuron_act(&ns->cells[vd5]) : -1,
+                s->body.m_d[10], s->body.m_v[10]);
+    }
+#endif
+
     world_step(&s->world, &s->body, dt);
     sensory_step(s);
     body_proprioception(&s->body, ns);

@@ -26,6 +26,7 @@ typedef struct {
 typedef struct {
     motor_map_t mm;
     float k[N_SEG];            /* curvature, 1/mm, positive is dorsal bend */
+    float k_read[N_SEG];       /* lowpassed curvature, the proprioceptive copy */
     float theta[N_SEG];        /* absolute segment orientation, rad */
     float x[N_SEG + 1], y[N_SEG + 1];  /* joint positions, mm */
     float px[N_SEG + 1], py[N_SEG + 1]; /* previous step shape, head anchored */
