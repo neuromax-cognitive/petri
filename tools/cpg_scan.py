@@ -13,7 +13,7 @@ TSIM = 30.0
 STEPS = int(TSIM / DT)
 
 def run(sign, w_self, w_back, lag_seg, tau_prop, tau_mus, tau_bend, bend_gain,
-        nmj, noise, seed):
+        nmj, noise, seed, p=4.0):
     # sign: +1 own-side positive feedback, -1 stretch reflex (contralateral),
     # 0 contrast copy (k[src] - k[own])
     k = [0.25 * math.cos(i * 0.5) for i in range(N)]
@@ -41,11 +41,13 @@ def run(sign, w_self, w_back, lag_seg, tau_prop, tau_mus, tau_bend, bend_gain,
                 d = nb - own
             else:
                 d = sign * (w_self * own + w_back * nb)
-            dpos = d if d > 0 else 0.0
-            dneg = -d if d < 0 else 0.0
+            dpos = d * p if d > 0 else 0.0
+            dneg = -d * p if d < 0 else 0.0
             # push pull muscle pair, no co contraction
             mp = m[2 * i] + DT / tau_mus * (nmj * dpos - m[2 * i])
             mn = m[2 * i + 1] + DT / tau_mus * (nmj * dneg - m[2 * i + 1])
+            mp = 0.0 if mp < 0.0 else (1.0 if mp > 1.0 else mp)
+            mn = 0.0 if mn < 0.0 else (1.0 if mn > 1.0 else mn)
             m[2 * i], m[2 * i + 1] = mp, mn
             mdmv = m[2 * i] - m[2 * i + 1]
             k[i] += DT / tau_bend * (-k[i] + bend_gain * mdmv)
@@ -91,7 +93,7 @@ def score(hist):
         denq = den
         ph = math.atan2(numq / denq if denq else 0, c)
         phases.append(ph)
-        amps.append(math.sqrt(sum((x - ms) ** 2 for x in sig)))
+        amps.append(math.sqrt(sum((x - ms) ** 2 for x in sig) / n))
     # unwrap phases, fit line vs segment index
     unw = [phases[0]]
     for i in range(1, N):
@@ -103,22 +105,27 @@ def score(hist):
     sxx = sum(i * i for i in range(N)); sxy = sum(i * unw[i] for i in range(N))
     slope = (N * sxy - sx * sy) / (N * sxx - sx * sx)
     mean_amp = sum(amps) / N
-    return slope, mean_amp, min(amps), max(amps), period * 10 * 0.001
+    tail = [hist[t][j] for t in range(n - 1000, n) for j in range(18, 24)]
+    tail_bias = sum(tail) / len(tail)
+    return slope, mean_amp, min(amps), max(amps), period * 10 * 0.001, tail_bias
 
 configs = []
-for w_self in [0.5, 1.0, 2.0]:
-    for w_back in [1.0, 1.5, 2.0, 3.0]:
-        for tau_prop in [0.15, 0.30, 0.50]:
-            configs.append((2, "mixed", w_self, w_back, 3, tau_prop))
+for p in [2.5, 5.0, 10.0]:
+    for w_back in [1.0, 1.2, 1.4]:
+        for tau_prop in [0.4, 0.6, 0.8, 1.0]:
+            configs.append((2, "mixed", 1.0, w_back, 3, tau_prop, p))
 
 print("%-9s %5s %5s %4s %5s | %7s %7s %7s" %
       ("design", "wself", "wback", "lag", "tp", "slope", "amp", "minamp"))
-for sign, name, ws, wb, lag, tp in configs:
-    h = run(sign, ws, wb, lag, tp, 0.09, 0.11, 9.0, 0.9, 0.0, 12345)
+for cfg in configs:
+    sign, name, ws, wb, lag, tp, p = cfg
+    h = run(sign, ws, wb, lag, tp, 0.09, 0.11, 9.0, 0.9, 0.0, 12345, p)
     r = score(h)
     if r is None:
         print("%-9s %5.2f %5.2f %4d %5.2f | dead" % (name, ws, wb, lag, tp))
         continue
-    slope, amp, amin, amax, period = r
-    print("%-9s %5.2f %5.2f %4d %5.2f | slope %6.3f amp %5.2f min %5.2f T %4.1fs" %
-          (name, ws, wb, lag, tp, slope, amp, amin, period))
+    slope, amp, amin, amax, period, tb = r
+    thrust = amp * amp / period if period > 0 else 0
+    ok = 2.0 <= amp <= 4.0 and 0.7 <= period <= 1.5 and 0.26 <= abs(slope) <= 0.52 and abs(tb) < 0.5
+    print("%-9s p%4.1f w%4.2f w%4.2f tp%4.2f | slope %6.3f amp %5.2f T %4.1fs tb %5.2f thrust %6.1f %s" %
+          (name, p, ws, wb, tp, slope, amp, period, tb, thrust, "PASS" if ok else ""))

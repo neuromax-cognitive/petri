@@ -32,7 +32,7 @@ static const float STSP_EVENT_MS  = 10.0f;   /* vesicle turnover timescale per r
 
 /* homeostatic scaling */
 static const float HOMEO_TARGET   = 0.30f;   /* desired mean activation */
-static const float HOMEO_TAU_MS   = 60000.0f; /* 60 s, very slow */
+static const float HOMEO_TAU_MS   = 600000.0f; /* 60 s, very slow */
 static const float HOMEO_MIN      = 0.25f;
 static const float HOMEO_MAX      = 4.0f;
 
@@ -54,13 +54,15 @@ static const float DA_G_MECH_SCALE = 0.5f;   /* da shunts mechanosensory synapse
 /* body mechanics, units mm and ms */
 static const float BODY_LEN_MM    = 1.0f;    /* adult hermaphrodite, mm */
 static const float K_MAX_INV_MM   = 12.0f;   /* max curvature, 1/mm, cuticle limit */
-static const float TAU_BEND_MS    = 110.0f;  /* cuticle viscoelastic relaxation, ms */
+static const float TAU_BEND_MS    = 220.0f;  /* cuticle viscoelastic relaxation, ms, approx raised from 110 to slow the loop into the target period */
 static const float BEND_GAIN      = 9.0f;    /* muscle differential to curvature gain */
+static const float BOUNDARY_DAMP  = 3.0f;    /* extra end relaxation, kills the static curl mode */
+static const int   BOUNDARY_SEG   = 3;       /* segments damped at each free end */
 static const float DRAG_T         = 0.021f;  /* tangential drag per segment, uN*s/mm */
 static const float DRAG_RATIO     = 36.0f;   /* normal/tangential ratio on agar, gray and lissmann */
 static const float PROP_GAIN      = 8.0f;    /* proprioceptive drive into motor neurons, mv per 1/mm */
 static const int   PROP_LAG_SEG   = 3;       /* segments of spatial phase lag */
-static const float PROP_TAU_MS    = 150.0f;  /* proprioceptive read lag, ms */
+static const float PROP_TAU_MS    = 500.0f;  /* proprioceptive read lag, ms */
 static const float PROP_SELF_W    = 1.0f;    /* own segment bend weight, relaxation oscillator */
 static const float PROP_BACK_W    = 1.2f;    /* neighbor copy weight, hands the flip on */
 static const float MN_CHAIN_GAP_W = 0.5f;    /* electrotonic chain weight along one motor class */
@@ -72,7 +74,7 @@ static const float BIAS_AVB_MV    = 4.0f;
 static const float BIAS_AVA_MV    = 0.0f;   /* ava is command driven, no endogenous drive */
 static const float NMJ_SIGMA_SEG  = 0.8f;    /* spatial spread of one mn onto muscle bands */
 static const float NMJ_GAIN       = 0.9f;    /* motor activation to muscle activation */
-static const float MUSCLE_TAU_MS  = 90.0f;   /* excitation contraction coupling, ms */
+static const float MUSCLE_TAU_MS  = 180.0f;   /* excitation contraction coupling, ms, approx raised from 90, see tau bend note */
 
 /* sensory transduction */
 static const float CHEMO_TAU_ADAPT_S = 3.0f; /* receptor adaptation, s */

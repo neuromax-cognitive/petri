@@ -192,7 +192,12 @@ mechanosensory synapses on contact. graded, no mode switches.
   arrived at independently through the scan. the ava gating of a class
   proprioception is our assumption, not literature.
   open gaps:
-  wave amplitude saturates near 1 1/mm, an order below what thrust needs,
-  and the tail carries a static 2 1/mm dorsal bias that eats muscle range.
-  net displacement is still ~0.4 mm per 60 s against 12 to 24 mm for a
-  real animal, the amplitude regulation is the next problem
+  amplitude campaign closed with the static curl identified but not fixed.
+  measured at 120 s, seed 1: the body holds a standing profile, head mean
+  -2.3 1/mm ventral, tail mean +3.8 dorsal, with the traveling wave as a
+  +-0.5 ripple on top, net 0.3 mm per 120 s. excluded causes: homeostatic
+  drift (homeo tau 60 s to 600 s, no change), boundary free end mode
+  (boundary damping, no change). remaining suspects: the copy chain holds
+  a self consistent exponential profile (per hop attenuation 0.89) and
+  something at the head seeds it. next ideas: separate filter paths for
+  the copy and the self term, or head region proprioception shaping

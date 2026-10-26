@@ -258,6 +258,13 @@ void body_step(body_t* b, nervous_t* ns, float nmj_gain, float dt)
         if (b->k[i] > max_k) b->k[i] = max_k;
         if (b->k[i] < -max_k) b->k[i] = -max_k;
     }
+    /* the free ends have no neighbor beyond and would hold a static curl
+       mode otherwise, faster relaxation there pins the ends near straight */
+    for (i = 0; i < BOUNDARY_SEG; i++) {
+        float damp = 1.0f - (dt / TAU_BEND_MS) * BOUNDARY_DAMP;
+        b->k[i] *= damp;
+        b->k[N_SEG - 1 - i] *= damp;
+    }
 
     /* px,py hold the previous head anchored shape, static lx,ly survive the
        call so they carry it, then build_shape overwrites them with the new one */
