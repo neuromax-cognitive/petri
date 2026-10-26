@@ -182,6 +182,12 @@ static void sensory_step(sim_t* s)
     /* nociception, nose contact feeds ash, an aversive reversal trigger */
     for (i = 0; i < s->n_ash; i++)
         ns->cells[s->idx_ash[i]].i_sens = b->nose_contact ? MEC_G : 0.0f;
+    /* conditioning protocol: the paired arm forces ash during the training
+       window so ash punishment coincides with the odor pathway, the control
+       arm smells the same odor without punishment */
+    if (s->opts.conditioning == 1 && s->t_ms > 20000.0 && s->t_ms < 80000.0)
+        for (i = 0; i < s->n_ash; i++)
+            ns->cells[s->idx_ash[i]].i_sens = MEC_G;
 
     /* gentle mechanosensation, the receptor current follows the slow
        relaxation trace, habituation comes from stsp at its synapses */

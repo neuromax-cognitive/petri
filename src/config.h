@@ -10,7 +10,7 @@
 
 /* integration */
 static const float DT_MS          = 1.0f;    /* ode step, ms */
-static const float NOISE_SD_MV    = 0.4f;    /* membrane noise per sqrt step, mv */
+static const float NOISE_SD_MV    = 0.40f;    /* membrane noise per sqrt step, mv */
 
 /* graded membrane */
 static const float V_REST_MV      = -50.0f;  /* resting potential, mv */
@@ -62,18 +62,18 @@ static const float DRAG_T         = 0.021f;  /* tangential drag per segment, uN*
 static const float DRAG_RATIO     = 36.0f;   /* normal/tangential ratio on agar, gray and lissmann */
 static const float PROP_GAIN      = 8.0f;    /* proprioceptive drive into motor neurons, mv per 1/mm */
 static const int   PROP_LAG_SEG   = 3;       /* segments of spatial phase lag */
-static const float PROP_TAU_MS    = 500.0f;  /* proprioceptive read lag, ms */
+static const float PROP_TAU_MS    = 500.00f;  /* proprioceptive read lag, ms */
 static const float PROP_SELF_W    = 1.0f;    /* own segment bend weight, relaxation oscillator */
-static const float PROP_BACK_W    = 1.2f;    /* neighbor copy weight, hands the flip on */
+static const float PROP_BACK_W    = 1.20f;    /* neighbor copy weight, hands the flip on */
 static const float MN_CHAIN_GAP_W = 0.5f;    /* electrotonic chain weight along one motor class */
 
 /* endogenous activity of the command circuit, mv of standing bias current.
    graded whole animal models need avb near the sigmoid midpoint or the
    proprioceptive loop has no gain to work with, kunert 2017, boyle 2012 */
-static const float BIAS_AVB_MV    = 4.0f;
+static const float BIAS_AVB_MV    = 4.00f;
 static const float BIAS_AVA_MV    = 0.0f;   /* ava is command driven, no endogenous drive */
 static const float NMJ_SIGMA_SEG  = 0.8f;    /* spatial spread of one mn onto muscle bands */
-static const float NMJ_GAIN       = 0.9f;    /* motor activation to muscle activation */
+static const float NMJ_GAIN       = 0.90f;    /* motor activation to muscle activation */
 static const float MUSCLE_TAU_MS  = 180.0f;   /* excitation contraction coupling, ms, approx raised from 90, see tau bend note */
 
 /* sensory transduction */

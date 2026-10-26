@@ -241,6 +241,7 @@ static void usage(FILE* out)
         "  -P, --population N   evolution population size, default 20\n"
         "  -O, --evolve-output F output path for best genome (default: best_genome.json)\n"
         "  -n, --evolve-fitness M  net or path, default path\n"
+        "  -C, --conditioning M   paired or control, training protocol\n"
         "  -T, --tap MS         automatic tap every MS milliseconds\n"
         "  -F, --no-food        remove the bacterial lawn\n"
         "  -G, --thermo         enable thermal gradient\n"
@@ -273,6 +274,7 @@ int main(int argc, char** argv)
             { "population", required_argument, NULL, 'P' },
             { "evolve-output", required_argument, NULL, 'O' },
             { "evolve-fitness", required_argument, NULL, 'n' },
+            { "conditioning", required_argument, NULL, 'C' },
             { "tap", required_argument, NULL, 'T' },
             { "no-food", no_argument, NULL, 'F' },
             { "thermo", no_argument, NULL, 'G' },
@@ -282,7 +284,7 @@ int main(int argc, char** argv)
         };
         int ch;
         int have_duration = 0;
-        while ((ch = getopt_long(argc, argv, "Hd:s:c:a:Ae:E:P:O:n:T:FGqh", lo, NULL)) != -1) {
+        while ((ch = getopt_long(argc, argv, "Hd:s:c:a:Ae:E:P:O:n:C:T:FGqh", lo, NULL)) != -1) {
             switch (ch) {
             case 'H': opts.headless = 1; break;
             case 'd': opts.duration_s = atof(optarg); have_duration = 1; break;
@@ -295,6 +297,11 @@ int main(int argc, char** argv)
             case 'P': opts.population = atoi(optarg); break;
             case 'O': opts.evolve_output = optarg; break;
             case 'n': opts.evolve_fitness_net = (strcmp(optarg, "net") == 0); break;
+            case 'C':
+                opts.conditioning = strcmp(optarg, "paired") == 0 ? 1 :
+                                    (strcmp(optarg, "control") == 0 ? 2 : 0);
+                opts.headless = 1;
+                break;
             case 'T': opts.tap_interval_ms = (float)atof(optarg); break;
             case 'F': opts.no_food = 1; break;
             case 'G': opts.thermo = 1; break;

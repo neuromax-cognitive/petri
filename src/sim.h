@@ -26,6 +26,7 @@ typedef struct {
     int evolve_gens;         /* number of generations for --evolve mode */
     int population;          /* evolution population size, 0 means default */
     int evolve_fitness_net;  /* 1 scores net displacement instead of path length */
+    int conditioning;        /* 0 none, 1 paired odor plus ash, 2 odor only control */
     const char* evolve_output; /* output path for best genome */
 } sim_opts_t;
 

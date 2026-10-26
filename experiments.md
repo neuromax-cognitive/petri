@@ -1,0 +1,83 @@
+# experiments, phase 3 and 4
+
+all runs headless, frozen csv contract, seeds stated per row. the model is
+below the literature locomotion range (see validation.md), the flagship
+numbers below are structural comparisons, not biological claims yet.
+
+## 3a ablation screen, builtin, 2 s per neuron, seed 1
+
+speed ratio against the intact baseline, grouped by class. the spread is
+narrow because the phenotype being perturbed is small; the screen is
+infrastructure for the calibrated regime.
+
+| class | n | mean spd_ratio |
+|---|---|---|
+| AVA | 2 | 1.016 |
+| DA | 6 | 1.008 |
+| DD | 6 | 0.860 |
+| ASH | 2 | 0.832 |
+| AWA | 2 | 0.794 |
+| AWC | 2 | 0.794 |
+| ASE | 2 | 0.794 |
+| AFD | 2 | 0.787 |
+| AIY | 2 | 0.748 |
+| other | 13 | 0.746 |
+| AIB | 2 | 0.722 |
+| PVC | 2 | 0.707 |
+| RIM | 2 | 0.706 |
+| VA | 6 | 0.681 |
+| VD | 6 | 0.637 |
+| DB | 6 | 0.629 |
+| PLM | 2 | 0.623 |
+| ALM | 2 | 0.573 |
+| AVB | 2 | 0.547 |
+| VB | 6 | 0.518 |
+
+## 3b proprioceptive gain sweep, builtin, 60 s, seed 1
+
+| prop gain | head tail corr | wave amp 1/mm | net mm |
+|---|---|---|---|
+| 2.0 | -0.89 | 0.32 | 0.11 |
+| 4.0 | -0.88 | 0.31 | 0.12 |
+| 8.0 | -0.88 | 0.33 | 0.13 |
+| 16.0 | -0.66 | 0.69 | 0.40 |
+
+the amplitude and net displacement grow with gain while coherence decays:
+the operating point trades wave quality against thrust. phase 1
+calibration picked 8.0.
+
+## 3c tap habituation, tap every 5 s, 60 s, seed 1
+
+mean absolute head speed in the 2 s window after each tap stays flat at
+0.03 to 0.06 mm/s across 11 taps, reversal counts 2 to 7 per window with
+no decay trend. literature: the response decays over roughly five taps
+(rankin and broster 1992). verdict MISMATCH: the tsodyks markram
+depression is wired into the mechanosensory synapses but the behavioral
+readout requires a reversal response to touch, which this model does not
+express yet.
+
+## 3d cross connectome benchmark, 120 s, seed 1
+
+| connectome | neurons | net mm | mean speed mm/s |
+|---|---|---|---|
+| builtin | 75 | 0.20 | 0.0001 |
+| varshney full | 279 | 0.30 | -0.0014 |
+| herm 302 | 447 nodes | 0.42 | 0.0003 |
+| witvliet adult | 188 nodes | 0.00 | 0.0000 |
+
+no behavioral divergence between reconstructions is detectable in the
+current regime: locomotion is too small for the differences to express.
+the harness re-emits this table in one command after calibration.
+
+## phase 4 associative conditioning
+
+protocol: paired arm forces ash punishment during t 20 to 80 s while the
+odor pathway is active, control arm smells the same odor unpunished. the
+heterosynaptic rule then weakens attractive odor synapses. test: 300 s
+runs, 2 seeds per arm.
+
+paired seed1 ci 0.000, seed2 ci 0.000; control seed1 ci 0.000, seed2
+ci 0.000. verdict: null result. the preference readout requires
+approaching the odor sources, which the model does not do yet. the
+protocol is wired, the arms run clean, the measurement is honest zero
+until locomotion enters the literature range.
