@@ -1,0 +1,7 @@
+*.o
+elegans
+run.csv
+evolve.log
+best_genome.json
+best_overnight.json
+*.dSYM
