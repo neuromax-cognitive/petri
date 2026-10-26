@@ -50,6 +50,9 @@ typedef struct {
     float  tap_timer_ms;
     int    tap_active_ms;
     float  mec_trace;        /* decaying mechanoreceptor activation 0..1 */
+    float  ash_trace;        /* adapting nociceptor activation 0..1 */
+    int    prev_contact;     /* previous step wall or tap contact, edge detect */
+    int    prev_nose_contact; /* previous step nose contact, edge detect */
     float  g_chem_scale;    /* genome knobs, eval mode */
     float  g_gap_scale;
     float  tau_scale_global;

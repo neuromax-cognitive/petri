@@ -179,9 +179,11 @@ static void sensory_step(sim_t* s)
             ns->cells[s->idx_afd[i]].i_sens = THERMO_G * dt_resp;
     }
 
-    /* nociception, nose contact feeds ash, an aversive reversal trigger */
+    /* nociception, nose contact feeds ash, an aversive reversal trigger.
+       the current follows the adapting trace kept in sim_step, a
+       sustained press is one fading pulse, not a held command */
     for (i = 0; i < s->n_ash; i++)
-        ns->cells[s->idx_ash[i]].i_sens = b->nose_contact ? MEC_G : 0.0f;
+        ns->cells[s->idx_ash[i]].i_sens = MEC_G * s->ash_trace;
     /* conditioning protocol: the paired arm forces ash during the training
        window so ash punishment coincides with the odor pathway, the control
        arm smells the same odor without punishment */
@@ -276,13 +278,32 @@ void sim_step(sim_t* s)
         s->tap_active_ms -= (int)dt;
 
     /* mechanoreceptors relax slowly, a 300 ms tap drives the circuit for
-       about two seconds, giving the reversal loop time to capture the wave */
-    if (s->tap_active_ms > 0 || s->body.nose_contact || s->body.tail_contact)
-        s->mec_trace = 1.0f;
-    else if (s->mec_trace > 0.0f) {
-        s->mec_trace -= dt / MEC_TAU_MS;
-        if (s->mec_trace < 0.0f)
-            s->mec_trace = 0.0f;
+       about two seconds, giving the reversal loop time to capture the
+       wave. the refresh is edge only, a sustained press is one pulse, a
+       receptor held under constant pressure goes quiet */
+    {
+        int contact = s->tap_active_ms > 0 || s->body.nose_contact ||
+                      s->body.tail_contact;
+        /* receptor envelopes refresh on the contact edge only, a
+           sustained press is one fading pulse per channel, otherwise a
+           worm wedged into a corner would carry the touch and pain
+           commands forever */
+        if (contact && !s->prev_contact)
+            s->mec_trace = 1.0f;
+        if (s->body.nose_contact && !s->prev_nose_contact)
+            s->ash_trace = 1.0f;
+        if (s->mec_trace > 0.0f) {
+            s->mec_trace -= dt / MEC_TAU_MS;
+            if (s->mec_trace < 0.0f)
+                s->mec_trace = 0.0f;
+        }
+        if (s->ash_trace > 0.0f) {
+            s->ash_trace -= dt / ASH_TAU_MS;
+            if (s->ash_trace < 0.0f)
+                s->ash_trace = 0.0f;
+        }
+        s->prev_contact = contact;
+        s->prev_nose_contact = s->body.nose_contact;
     }
 
 

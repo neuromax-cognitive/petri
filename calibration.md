@@ -1,5 +1,19 @@
 # calibration log, phase 1
 
+## round 5, the corners stop holding the worm
+
+the wall touch fed ash with a step that lasted as long as the contact,
+and the gentle touch trace refreshed the same way, so a worm wedged
+into a corner carried the aversive command forever. both receptor
+envelopes now refresh on the contact edge only and decay under
+sustained pressure (ash tau 2.5 s, mec tau 0.8 s unchanged), the
+aversive pulse got stronger (mec gain 7 to 10) so a single touch can
+capture the wave. a 600 s run went from 313 s longest corner stay to
+143 s, corner time 56 to 24 percent. what remains: the worm still
+hugs the walls 61 percent of the time and reaches the food lawn only
+4 percent, wall following is real c elegans behavior but this much is
+an artifact of the clamp geometry, open defect.
+
 ## round 4, the dish got walls
 
 the worm could walk through the assay plate rim and off the arena,

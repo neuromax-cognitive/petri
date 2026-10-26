@@ -85,8 +85,9 @@ static const float CHEMO_G           = 3.0f; /* peak receptor conductance */
 static const float CHEMO_DERIV_W     = 2.0f; /* weight of dc/dt versus offset component */
 static const float THERMO_TAU_ADAPT_S = 8.0f;
 static const float THERMO_G           = 2.5f; /* per degree c */
-static const float MEC_G              = 7.0f; /* touch receptor conductance */
+static const float MEC_G            = 10.0f;
 static const float MEC_TAU_MS         = 800.0f; /* mechanoreceptor relaxation, ms */
+static const float ASH_TAU_MS         = 2500.0f;
 static const float TAP_MS             = 300.0f; /* mechanical tap duration, ms */
 
 /* world */
