@@ -1,5 +1,69 @@
 # calibration log, phase 1
 
+## round 2, after the sign error fixes
+
+the round 1 sweep at the bottom optimized inside a broken loop: three
+sign errors made the proprioceptive loop an anti reflex, and the body
+always collapsed into a saturated standing half wave. fixing the signs
+changed the problem. the three errors, in the order they were found:
+
+1. dd and vd muscle sides were swapped. dd is the inhibitory dorsal
+   neuron, it must inhibit dorsal muscle, not ventral (white 1986).
+   with the wrong side any d class tone pushed the body into a bend
+   instead of against it.
+2. the proprioceptive drive was rectified per class (forward classes
+   took the positive half, backward the negative). rectified drive
+   ratchets the membrane potential up, the operating point slides into
+   the saturated tail of the sigmoid and the small signal loop gain
+   dies. replaced by a signed push pull current: stretch depolarizes,
+   contraction hyperpolarizes.
+3. with signed drive, the inhibitory classes need the inverted sign,
+   otherwise the dd/vd path cancels the db/vb reflex. after inversion
+   all four motor neurons of a segment push the muscle pair one way.
+
+measured with the release build, 120 s, drag ratio 22, seed sweep.
+metrics use run windows only (serotonin below 0.3, that is the crawl
+phases between food dwells). target vector from the phase 1 plan:
+speed 0.15 to 0.30 mm/s, bend amplitude 2 to 4 1/mm, period 0.7 to
+1.5 s, static tail curl near zero.
+
+| seed | run speed mm/s | amplitude 1/mm | period s | tail curl 1/mm | net mm | verdict |
+|---|---|---|---|---|---|---|
+| 1 | 0.200 | 2.13 | 1.18 | 0.00 | 8.4 | pass |
+| 2 | 0.191 | 2.16 | 1.36 | 0.00 | 8.6 | pass |
+| 3 | 0.199 | 2.17 | 1.20 | 0.00 | 8.8 | pass |
+| 4 | 0.200 | 2.16 | 1.28 | 0.00 | 8.8 | pass |
+| 5 | 0.201 | 2.12 | 1.28 | 0.00 | 10.1 | pass |
+| 6 | 0.144 | 2.15 | 1.18 | 0.00 | 5.1 | fail, speed 0.006 under floor |
+| 7 | 0.203 | 2.13 | 1.23 | 0.00 | 9.0 | pass |
+| 8 | 0.154 | 2.19 | 1.36 | 0.00 | 6.5 | pass |
+| 9 | 0.203 | 2.17 | 1.17 | 0.00 | 9.0 | pass |
+| 10 | 0.193 | 2.12 | 1.30 | 0.00 | 8.4 | pass |
+
+9 of 10 seeds pass, criterion was 8 of 10. period measured per burst
+(median over run windows); the whole log zero crossing number reads
+high because it mixes bursts and dwells.
+
+final constants of this round: prop gain 36, prop tau 600 ms,
+prop lag 4 segments, prop back w 1.2, prop self w 1.0, bend gain 5.8,
+nmj gain 0.9, avb bias 8 mv, drag ratio 22, boundary damp 3.0,
+boundary seg 3.
+
+known residual gaps:
+- wavelength near 0.4 body length, target 0.5 to 1.0. the wave span
+  in the kymograph runs head to mid body; the posterior third reads
+  the boundary damped zone and stays quiet.
+- the drag ratio was calibrated inside the measured agar band rather
+  than taken from one paper, because the gray and lissmann 36 value is
+  a thin film measurement and the crawl speed is sensitive to it.
+- seed 6 speed 0.144 against the 0.15 floor, within noise of the gate.
+
+## round 1, superseded
+
+the sweep below ran against the broken loop, kept for the record. the
+score could not break past the standing mode no matter the constants,
+which is exactly why the signs, not the gains, were the problem.
+
 objective: net displacement + 40 x wave coherence - 8 x static curl, 30 s runs, seed 1, builtin connectome
 
 | step | score | net | corr | amp | curl |

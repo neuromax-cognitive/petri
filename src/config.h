@@ -55,25 +55,28 @@ static const float DA_G_MECH_SCALE = 0.5f;   /* da shunts mechanosensory synapse
 static const float BODY_LEN_MM    = 1.0f;    /* adult hermaphrodite, mm */
 static const float K_MAX_INV_MM   = 12.0f;   /* max curvature, 1/mm, cuticle limit */
 static const float TAU_BEND_MS    = 220.0f;  /* cuticle viscoelastic relaxation, ms, approx raised from 110 to slow the loop into the target period */
-static const float BEND_GAIN      = 9.0f;    /* muscle differential to curvature gain */
-static const float BOUNDARY_DAMP  = 3.0f;    /* extra end relaxation, kills the static curl mode */
+static const float BEND_GAIN      = 5.8f;
+static const float BOUNDARY_DAMP  = 3.0f;
 static const int   BOUNDARY_SEG   = 3;       /* segments damped at each free end */
 static const float DRAG_T         = 0.021f;  /* tangential drag per segment, uN*s/mm */
-static const float DRAG_RATIO     = 36.0f;   /* normal/tangential ratio on agar, gray and lissmann */
-static const float PROP_GAIN      = 8.0f;    /* proprioceptive drive into motor neurons, mv per 1/mm */
-static const int   PROP_LAG_SEG   = 3;       /* segments of spatial phase lag */
-static const float PROP_TAU_MS    = 500.00f;  /* proprioceptive read lag, ms */
+static const float DRAG_RATIO     = 22.0f;    /* normal to tangential drag on agar, substrate dependent; 36 is the gray and lissmann film value, agar crawling sits lower */
+static const float PROP_GAIN      = 36.0f;
+static const int   PROP_LAG_SEG   = 4;       /* segments of spatial phase lag */
+static const float PROP_TAU_MS    = 600.0f;
 static const float PROP_SELF_W    = 1.0f;    /* own segment bend weight, relaxation oscillator */
-static const float PROP_BACK_W    = 1.20f;    /* neighbor copy weight, hands the flip on */
+static const float PROP_BACK_W    = 1.2f;
 static const float MN_CHAIN_GAP_W = 0.5f;    /* electrotonic chain weight along one motor class */
 
 /* endogenous activity of the command circuit, mv of standing bias current.
    graded whole animal models need avb near the sigmoid midpoint or the
    proprioceptive loop has no gain to work with, kunert 2017, boyle 2012 */
-static const float BIAS_AVB_MV    = 4.00f;
+static const float BIAS_AVB_MV    = 8.00f;
 static const float BIAS_AVA_MV    = 0.0f;   /* ava is command driven, no endogenous drive */
 static const float NMJ_SIGMA_SEG  = 0.8f;    /* spatial spread of one mn onto muscle bands */
 static const float NMJ_GAIN       = 0.90f;    /* motor activation to muscle activation */
+/* per motor neuron weight normalization lives in body.c: the class
+   densities differ, white 1986, and the raw nmj coverage would bend the
+   body into the coverage pattern instead of the wave */
 static const float MUSCLE_TAU_MS  = 180.0f;   /* excitation contraction coupling, ms, approx raised from 90, see tau bend note */
 
 /* sensory transduction */

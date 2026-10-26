@@ -21,6 +21,7 @@ typedef struct {
     int   idx[MAX_MOTOR_NEURONS];    /* index into nervous_t */
     float pos[MAX_MOTOR_NEURONS];    /* body position 0 head .. 1 tail */
     uint8_t mclass[MAX_MOTOR_NEURONS];
+    float wscale[MAX_MOTOR_NEURONS]; /* per motor neuron drive normalization */
 } motor_map_t;
 
 typedef struct {

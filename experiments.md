@@ -81,3 +81,24 @@ ci 0.000. verdict: null result. the preference readout requires
 approaching the odor sources, which the model does not do yet. the
 protocol is wired, the arms run clean, the measurement is honest zero
 until locomotion enters the literature range.
+
+## amplitude and curl campaign, closed
+
+the standing saturated half wave (head ventral, tail dorsal, frozen
+body) was traced to three sign errors, not to gains: the dd/vd muscle
+side map was inverted, the proprioceptive drive was rectified (which
+ratchets the operating point into sigmoid saturation and kills the
+small signal loop gain), and the inhibitory classes needed the
+inverted drive sign to join the reflex instead of fighting it. after
+the fixes the loop oscillates as a stretch reflex with a 4 segment
+posterior receptive field and 600 ms receptor lag. the body now crawls
+in foraging runs separated by serotonin dwells on food. seed table in
+calibration.md: 9 of 10 seeds inside the literature speed band, bend
+amplitude 2.1 to 2.2 1/mm, tail curl exactly zero in every seed.
+
+cross connectome rerun on the fixed model, 120 s seed 1, net mm:
+builtin 8.4, varshney 7.5, herm302 9.3, witvliet 0.0 (motor neurons
+unnamed in that reconstruction). the first reconstruction divergence
+that is large enough to matter: herm302 crawls 24 percent further than
+varshney under identical body and mechanics. the a/b/c harness in
+run_all.sh re-emits this table.

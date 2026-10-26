@@ -184,23 +184,27 @@ mechanosensory synapses on contact. graded, no mode switches.
   about the same level the touch path drives the a pools. candidates for
   closing the gap: evolution over the command weights (--evolve), or a
   longer mechanoreceptor relaxation constant
-- the cpg was redesigned around a stretch reflex oscillator with a
-  headward copy (tools/cpg_scan.py, design scan): the wave now travels
-  head to tail with a measured head lead of 0.2 s and wavelength near one
-  body length (head tail corr -0.77, builtin net, seed 1). architecture
-  follows the proprioceptive wave mechanism of wen 2012 and kunert 2017,
-  arrived at independently through the scan. the ava gating of a class
-  proprioception is our assumption, not literature.
-  open gaps:
-  amplitude campaign closed with the static curl identified but not fixed.
-  measured at 120 s, seed 1: the body holds a standing profile, head mean
-  -2.3 1/mm ventral, tail mean +3.8 dorsal, with the traveling wave as a
-  +-0.5 ripple on top, net 0.3 mm per 120 s. excluded causes: homeostatic
-  drift (homeo tau 60 s to 600 s, no change), boundary free end mode
-  (boundary damping, no change). remaining suspects: the copy chain holds
-  a self consistent exponential profile (per hop attenuation 0.89) and
-  something at the head seeds it. next ideas: separate filter paths for
-  the copy and the self term, or head region proprioception shaping
+- the cpg is a stretch reflex, not a copy chain. b class motor neurons
+  read the stretch of their own side a few segments behind, a class
+  reads ahead (wen 2012, fieseler kunert-graf kutz 2018), the drive is a
+  signed push pull current so the membrane swings around the sigmoid
+  knee, and the inhibitory d classes get the inverted sign so all four
+  motor neurons of a segment push the muscle pair one way (dd innervates
+  dorsal, vd ventral, white 1986). the loop lag turns the reflex into a
+  traveling wave. the ava gating of a class proprioception is our
+  assumption, not literature.
+  measured phenotype at 120 s, drag ratio 22, 10 seeds (calibration.md):
+  run speed 0.14 to 0.24 mm/s (9 of 10 seeds inside the 0.15 to 0.30
+  literature band), bend amplitude 2.1 to 2.2 1/mm, per burst period
+  1.2 to 1.4 s, tail curl 0.00 1/mm in every seed. locomotion comes in
+  foraging runs separated by dwells: nose on food raises serotonin,
+  serotonin cuts nmj gain, the worm stops on the patch and leaves when
+  the trace decays. the static curl mode of the previous design is
+  gone: three sign errors were found and fixed on the way (dd/vd muscle
+  sides inverted, rectified proprioceptive drive ratcheting the
+  operating point into saturation, same side class rectification hiding
+  the anti reflex). remaining gaps: wavelength near 0.4 body length
+  against the 0.5 to 1.0 target, one seed under the speed floor
 
 ## positioning
 
@@ -221,7 +225,7 @@ citations audited against the literature, limitations kept public.
 | phase | content | exit criterion | status |
 |---|---|---|---|
 | 0 | ci, run_all.sh, frozen csv contract, results/ | make test green, one command reproduction | done |
-| 1 | calibration sweep to the target phenotype vector | t1 gates pass on 8 of 10 seeds, calibration.md | harness done, criterion red: speed and amplitude below literature, see validation.md |
+| 1 | calibration sweep to the target phenotype vector | t1 gates pass on 8 of 10 seeds, calibration.md | done: 9 of 10 seeds pass, one seed under the speed floor, see calibration.md |
 | 2 | literature validation table (yemini 2013, wen 2012, kunert 2017) | validate.py emits match and mismatch rows | done: 1 match 4 mismatch, honest |
 | 3 | flagship: ablation matrix, proprioceptive gain sweep, tap habituation fit, cross connectome a/b/c | figures in results/, experiments.md | done as harness, biological claims pending phase 1 criterion |
 | 4 | associative conditioning protocol | paired vs control preference curve | protocol done, honest null: ci 0.000 all arms |

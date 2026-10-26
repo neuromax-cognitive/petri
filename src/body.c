@@ -61,6 +61,31 @@ void body_build_motor_map(body_t* b, const connectome_t* c, nervous_t* ns)
         b->mm.mclass[b->mm.n_mn] = (uint8_t)cls;
         b->mm.n_mn++;
     }
+    /* normalize per motor neuron drive so the total class tone per body
+       length is equal: class densities differ, dd 6 against vd 13, and the
+       raw coverage would bend the body into the coverage pattern */
+    {
+        float dens[MAX_MOTOR_NEURONS];
+        float mean_dens[8];
+        int cnt[8];
+        int mi, ii, cl;
+        for (cl = 0; cl < 8; cl++) { mean_dens[cl] = 0.0f; cnt[cl] = 0; }
+        for (mi = 0; mi < b->mm.n_mn; mi++) {
+            float d = 0.0f;
+            for (ii = 0; ii < b->mm.n_mn; ii++) {
+                if (b->mm.mclass[ii] != b->mm.mclass[mi]) continue;
+                float dp = b->mm.pos[mi] - b->mm.pos[ii];
+                d += expf(-(dp * dp) / (2.0f * NMJ_SIGMA_SEG * NMJ_SIGMA_SEG));
+            }
+            dens[mi] = d;
+            mean_dens[b->mm.mclass[mi]] += d;
+            cnt[b->mm.mclass[mi]]++;
+        }
+        for (mi = 0; mi < b->mm.n_mn; mi++) {
+            float md = mean_dens[b->mm.mclass[mi]] / (float)cnt[b->mm.mclass[mi]];
+            b->mm.wscale[mi] = dens[mi] > 0.01f ? md / dens[mi] : 1.0f;
+        }
+    }
 }
 
 static void build_shape(body_t* b, float head_ang, float* x, float* y)
@@ -80,58 +105,65 @@ static void build_shape(body_t* b, float head_ang, float* x, float* y)
 }
 
 /*
- * b class motor neurons sense the bend a few segments behind their own
- * position, a class senses ahead. the receptor compares the bend across its
- * span instead of sensing absolute curvature: the spatial mean cancels, so
- * a uniform curl gets no feedback and decays, while the traveling contrast
- * of a wave regenerates itself at the right phase. this spatial lag is the
- * whole central pattern generator, no oscillator neuron exists.
+ * b class motor neurons are excited by stretch of their own side a few
+ * segments behind their position, a class by stretch ahead (wen 2012,
+ * fieseler kunert-graf kutz 2018). stretch of a side means the bend is
+ * away from it, so the rectified drive contracts the stretched side and
+ * the proprioceptive loop becomes a negative feedback reflex. the loop
+ * lag makes the reflex overshoot and that overshoot is the traveling
+ * wave, no oscillator neuron exists.
  */
 void body_proprioception(body_t* b, nervous_t* ns)
 {
     int m, i;
+    float ava_gate = 0.0f;
     /* the receptor copy lags the real bend, a segment chases the bend of
        ~tau ago and the chase overshoots into a traveling wave */
     for (i = 0; i < N_SEG; i++) {
         b->k_read[i] += (DT_MS / PROP_TAU_MS) * (b->k[i] - b->k_read[i]);
     }
+    /* assumption: a class proprioception gated by the ava command is
+       circuit design, not a literature fact. without the gate the reverse
+       reflex fights the forward wave in antiphase */
+    {
+        int ava = nervous_find_prefix(ns, "AVA");
+        if (ava >= 0)
+            ava_gate = neuron_act(&ns->cells[ava]);
+        ava_gate *= ava_gate;
+    }
     for (m = 0; m < b->mm.n_mn; m++) {
         int seg = (int)(b->mm.pos[m] * (float)N_SEG);
         int cls = b->mm.mclass[m];
         int src;
-        float drive = 0.0f;
-        neuron_t* c;
+        float d;
+        neuron_t* c = &ns->cells[b->mm.idx[m]];
         if (seg < 0) seg = 0;
         if (seg > N_SEG - 1) seg = N_SEG - 1;
         if (cls == MC_DB || cls == MC_VB || cls == MC_DD || cls == MC_VD)
-            src = seg - PROP_LAG_SEG;
-        else
             src = seg + PROP_LAG_SEG;
+        else
+            src = seg - PROP_LAG_SEG;
         if (src < 0) src = 0;
         if (src > N_SEG - 1) src = N_SEG - 1;
-        /* push pull drive: the delayed own bend with negative sign is the
-           stretch reflex oscillator, the positive headward copy repeats the
-           neighbor bend a beat later and that is what makes the wave run
-           tailward. offline scan tools/cpg_scan.py: this is the only sign
-           combination with a linear phase gradient */
+        /* stretch reflex with a signed current: stretch of the neuron's
+           own side depolarizes, contraction hyperpolarizes, so the
+           membrane potential swings around the sigmoid knee instead of
+           ratcheting into saturation. dorsal and ventral classes read
+           mirrored halves of the same curvature field. k above zero is
+           dorsal contraction, so ventral stretch reads plus k. */
+        d = PROP_BACK_W * b->k_read[src] + PROP_SELF_W * b->k_read[seg];
+        if (cls == MC_DA || cls == MC_VA)
+            d *= ava_gate;
         {
-            float d = PROP_BACK_W * b->k_read[src] - PROP_SELF_W * b->k_read[seg];
+            /* dd and vd are inhibitory: depolarizing one relaxes its own
+               muscle, so the reflex inverts their sign and the four motor
+               neurons of a segment push the muscle pair one way */
+            float s = (cls == MC_DD || cls == MC_VD) ? -1.0f : 1.0f;
             if (cls == MC_DB || cls == MC_DD || cls == MC_DA)
-                drive = d > 0.0f ? d : 0.0f;
+                c->i_prop = -s * PROP_GAIN * d;
             else
-                drive = d < 0.0f ? -d : 0.0f;
+                c->i_prop = s * PROP_GAIN * d;
         }
-        c = &ns->cells[b->mm.idx[m]];
-        /* assumption: a class proprioception gated by the ava command is
-           circuit design, not a literature fact. without the gate the
-           reverse copy reads the crest that has not arrived yet and fights
-           the forward wave in antiphase */
-        if (cls == MC_DA || cls == MC_VA) {
-            int ava = nervous_find_prefix(ns, "AVA");
-            float gate = ava >= 0 ? neuron_act(&ns->cells[ava]) : 0.0f;
-            drive *= gate * gate;
-        }
-        c->i_prop = PROP_GAIN * drive;
     }
 }
 
@@ -232,11 +264,12 @@ void body_step(body_t* b, nervous_t* ns, float nmj_gain, float dt)
         for (i = 0; i < N_SEG; i++) {
             float d = (float)i - mn_seg;
             float wgt = nmj_gain * expf(-(d * d) / (2.0f * NMJ_SIGMA_SEG * NMJ_SIGMA_SEG));
-            /* d class inhibits the opposite side, preventing co contraction spasm */
-            if (cls == MC_DB || cls == MC_DA) targ_d[i] += wgt * a;
-            else if (cls == MC_VB || cls == MC_VA) targ_v[i] += wgt * a;
-            else if (cls == MC_DD) targ_v[i] -= wgt * a;
-            else if (cls == MC_VD) targ_d[i] -= wgt * a;
+            /* d class inhibits the opposite side, preventing co contraction spasm,
+               per motor neuron weights are normalized in the motor map */
+            if (cls == MC_DB || cls == MC_DA) targ_d[i] += wgt * a * b->mm.wscale[m];
+            else if (cls == MC_VB || cls == MC_VA) targ_v[i] += wgt * a * b->mm.wscale[m];
+            else if (cls == MC_DD) targ_d[i] -= wgt * a * b->mm.wscale[m];
+            else if (cls == MC_VD) targ_v[i] -= wgt * a * b->mm.wscale[m];
         }
     }
 

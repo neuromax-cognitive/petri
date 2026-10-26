@@ -288,19 +288,28 @@ void sim_step(sim_t* s)
 
 #ifdef CE_LOOP_DEBUG
     /* temporary loop instrumentation, enabled with -DCE_LOOP_DEBUG only */
-    if (((long)(s->t_ms)) % 100 == 0) {
-        int db5 = nervous_find_prefix(ns, "DB5");
-        int vb5 = nervous_find_prefix(ns, "VB5");
-        int dd5 = nervous_find_prefix(ns, "DD5");
-        int vd5 = nervous_find_prefix(ns, "VD5");
-        float kd6 = s->body.k[6], kd9 = s->body.k[9];
-        fprintf(stderr, "t=%5.0f k6=%7.3f k9=%7.3f db5=%5.3f vb5=%5.3f dd5=%5.3f vd5=%5.3f md10=%6.3f mv10=%6.3f\n",
-                s->t_ms, kd6, kd9,
-                db5 >= 0 ? neuron_act(&ns->cells[db5]) : -1,
-                vb5 >= 0 ? neuron_act(&ns->cells[vb5]) : -1,
-                dd5 >= 0 ? neuron_act(&ns->cells[dd5]) : -1,
-                vd5 >= 0 ? neuron_act(&ns->cells[vd5]) : -1,
-                s->body.m_d[10], s->body.m_v[10]);
+    if ((long)(s->t_ms) % 250 == 0 && (long)(s->t_ms) >= 117000) {
+        int j;
+        fprintf(stderr, "t=%5.0f:", s->t_ms);
+        for (j = 0; j < N_SEG; j++)
+            fprintf(stderr, "%s%+4.1f", (j % 6) == 5 ? " |" : " ", s->body.k[j]);
+        fprintf(stderr, "\n");
+    }
+    {
+        static int db3 = -2, vb3 = -2, avb = -2;
+        int j;
+        if (db3 == -2) {
+            for (j = 0; j < ns->n; j++) {
+                if (strncmp(ns->cells[j].name, "DB3", 4) == 0) db3 = j;
+                else if (strncmp(ns->cells[j].name, "VB3", 4) == 0) vb3 = j;
+                else if (strncmp(ns->cells[j].name, "AVB", 3) == 0 && avb < 0) avb = j;
+            }
+        }
+        if ((long)(s->t_ms) % 250 == 0 && (long)(s->t_ms) >= 117000 && db3 >= 0)
+            fprintf(stderr, "  DB3 v=%+6.1f act=%.2f ip=%+5.1f ic=%+5.1f | VB3 v=%+6.1f act=%.2f ip=%+5.1f | AVB act=%.2f\n",
+                    ns->cells[db3].v, neuron_act(&ns->cells[db3]), ns->cells[db3].i_prop, ns->cells[db3].i_chem,
+                    ns->cells[vb3].v, neuron_act(&ns->cells[vb3]), ns->cells[vb3].i_prop,
+                    avb >= 0 ? neuron_act(&ns->cells[avb]) : -1.0f);
     }
 #endif
 

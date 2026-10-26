@@ -42,17 +42,25 @@ rotation of the previous step is rotated out before differencing.
 
 ### proprioceptive pattern generation
 
-no central pattern generator exists in the circuit. each segment is a
-relaxation oscillator: the motor neuron reads a 500 ms lowpassed copy of
-its own segment curvature with negative sign (stretch reflex) and the
-curvature of the segment 3 positions toward the head with positive sign
-(phase relay). the design was found by an offline parameter scan
-(tools/cpg_scan.py) after the contrast copy design was shown to be
-dissipative, that is incapable of carrying a traveling wave. the scan is
-shipped. architecture follows the proprioceptive wave mechanism of
-wen 2012 and kunert 2017, arrived at independently. the gating of
-a class proprioception by the ava command is our assumption, not a
-literature fact.
+no central pattern generator exists in the circuit. the motor neurons
+run a stretch reflex: a b class neuron is depolarized by the stretch of
+its own side a few segments behind its position, an a class by the
+stretch ahead (wen 2012; fieseler, kunert-graf and kutz 2018 model the
+same polarity with a multi segment receptive field). the drive is a
+signed current, not a rectified one: stretch depolarizes, contraction
+hyperpolarizes, so the membrane swings around the sigmoid knee instead
+of ratcheting into saturation. dorsal and ventral classes read mirrored
+halves of the same curvature field, and the inhibitory d classes get
+the inverted sign, which makes the four motor neurons of a segment push
+the muscle pair in one direction. the muscle side map follows the
+anatomy: dd innervates dorsal muscles, vd ventral, both inhibitory
+(white 1986). the loop delay, proprioceptive tau 600 ms over a 4
+segment receptive field plus muscle and bend taus, turns the negative
+feedback reflex into a traveling wave; no oscillator neuron exists.
+the gating of a class proprioception by the ava command is our
+assumption, not a literature fact. the drag anisotropy is substrate
+dependent, the shipped value 22 sits inside the measured agar band,
+gray and lissmann's 36 is the thin film value.
 
 ### sensory streams
 
