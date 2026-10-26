@@ -1,0 +1,5 @@
+run,net_mm,mean_speed_mm_s
+builtin,0.20,0.0001
+varshney,0.30,-0.0014
+herm302,0.42,0.0003
+witvliet,0.00,0.0000

@@ -35,3 +35,6 @@ clean:
 	rm -f $(BIN) $(OBJ)
 
 .PHONY: all debug run batch clean
+
+test: $(BIN)
+	sh tests/run_tests.sh

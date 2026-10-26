@@ -228,7 +228,8 @@ static const int  N_MN_PER_CLASS = 6;
 int conn_load_builtin(connectome_t* c, nervous_t* ns)
 {
     int i, j, cls;
-    char src[NEURON_NAME_MAX], dst[NEURON_NAME_MAX];
+    /* 16 bytes so the compiler can see snprintf always fits */
+    char src[16], dst[16];
 
     n_staged = 0;
     ns->n = 0;

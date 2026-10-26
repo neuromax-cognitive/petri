@@ -112,7 +112,7 @@ void sim_reset_dynamics(sim_t* s)
         /* nervous_init clears names, rebuild from connectome table */
         int i;
         for (i = 0; i < s->conn.n_neurons; i++)
-            snprintf(s->ns.cells[i].name, NEURON_NAME_MAX, "%s", s->conn.names[i]);
+            memcpy(s->ns.cells[i].name, s->conn.names[i], NEURON_NAME_MAX);
         s->ns.n = s->conn.n_neurons;
     }
     conn_classify(&s->conn, &s->ns);

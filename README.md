@@ -201,3 +201,39 @@ mechanosensory synapses on contact. graded, no mode switches.
   a self consistent exponential profile (per hop attenuation 0.89) and
   something at the head seeds it. next ideas: separate filter paths for
   the copy and the self term, or head region proprioception shaping
+
+## positioning
+
+not "another worm simulator". petri is a falsifiable test bench for
+connectome to behavior hypotheses: one binary, c99, zero dependencies,
+deterministic, every claim is a script plus csv plus seed. the flagship
+experiment nobody else ships: the same body and mechanics run against
+three published connectome reconstructions and the behavioral
+divergence of the reconstructions is measured. a difference between
+datasets is a result, so is their agreement.
+
+development is ai assisted and declared: code drafted with llm
+assistance, every change gated by tests/run_tests.sh and human review,
+citations audited against the literature, limitations kept public.
+
+## roadmap
+
+| phase | content | exit criterion | status |
+|---|---|---|---|
+| 0 | ci, run_all.sh, frozen csv contract, results/ | make test green, one command reproduction | done |
+| 1 | calibration sweep to the target phenotype vector | t1 gates pass on 8 of 10 seeds, calibration.md | open |
+| 2 | literature validation table (yemini 2013, wen 2012, kunert 2017) | validate.py emits match and mismatch rows | open |
+| 3 | flagship: ablation matrix, proprioceptive gain sweep, tap habituation fit, cross connectome a/b/c | figures in results/, experiments.md | open |
+| 4 | associative conditioning protocol | paired vs control preference curve | open |
+| 5 | methods draft, benchmark note, zenodo doi, CITATION.cff | citable v1.0 | open |
+
+non goals, deliberately: 3d mechanics, spikes, python bindings, gui,
+openworm integration, new neuron classes, wasm. they would kill the
+lightness and determinism that make the bench worth having.
+
+## csv schema
+
+frozen header, see tests/run_tests.sh:
+t_s,vel_mm_s,curv_inv_mm,k_head,k_tail,ava,avb,aib,aiy,serotonin,head_x_mm,head_y_mm
+units: t s, vel mm/s, curv 1/mm, k 1/mm, activations 0..1, serotonin 0..1,
+position mm.
