@@ -55,6 +55,7 @@ int main(int argc, char** argv)
     sim_opts_t opts;
     int rc = 0;
     int paused = 0;
+    int have_duration = 0;
     float speed_mult = 1.0f;
 
     memset(&opts, 0, sizeof(opts));
@@ -83,7 +84,6 @@ int main(int argc, char** argv)
             { NULL, 0, NULL, 0 }
         };
         int ch;
-        int have_duration = 0;
         while ((ch = getopt_long(argc, argv, "Hd:s:c:a:Ae:E:P:O:n:C:T:FGqh", lo, NULL)) != -1) {
             switch (ch) {
             case 'H': opts.headless = 1; break;
@@ -169,6 +169,11 @@ int main(int argc, char** argv)
     }
 
     /* interactive dashboard, refuse to start without a real tty */
+    if (!have_duration) {
+        /* an interactive session runs until q, not until the batch timer
+           runs out, the batch default only exists for the scripted modes */
+        opts.duration_s = 1.0e9;
+    }
     if (!isatty(STDIN_FILENO)) {
         fprintf(stderr, "terminal: stdin is not a tty, use --headless\n");
         rc = 1;
@@ -180,6 +185,7 @@ int main(int argc, char** argv)
         goto cleanup;
     }
 
+    fprintf(stderr, "dashboard: q quit, p pause, t tap, f food, +/- sim speed\n");
     {
         static tui_t tui;
         long n_steps = (long)(sim.opts.duration_s * 1000.0 / DT_MS);
@@ -222,6 +228,8 @@ int main(int argc, char** argv)
                 sleep_ms(RENDER_EVERY_MS / speed_mult);
             }
         }
+        if (n_steps < (1L << 40))
+            fprintf(stderr, "duration reached\n");
     }
 
 cleanup:
