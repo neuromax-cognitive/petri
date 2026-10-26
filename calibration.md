@@ -1,5 +1,16 @@
 # calibration log, phase 1
 
+## round 3, after the rng stream fix
+
+the pool initializer drew a random start potential for every cell of
+the capacity sized pool, max neurons included. raising the capacity for
+the male connectome shifted the noise stream for the whole run and
+silently reseeded everything. the initializer now draws nothing, the
+first per step noise lands on the same stream positions at any pool
+size. seed table re-measured after the fix, this re-blesses the csv
+baselines: battery 8 of 10, seeds 2 and 3 under the speed floor
+(0.139, 0.134 against 0.15), the rest inside every band.
+
 ## round 2, after the sign error fixes
 
 the round 1 sweep at the bottom optimized inside a broken loop: three
@@ -47,7 +58,11 @@ high because it mixes bursts and dwells.
 final constants of this round: prop gain 36, prop tau 600 ms,
 prop lag 4 segments, prop back w 1.2, prop self w 1.0, bend gain 5.8,
 nmj gain 0.9, avb bias 8 mv, drag ratio 22, boundary damp 3.0,
-boundary seg 3.
+boundary seg 3. note: an attempt to recruit the tail by softening the
+boundary damping (1.5) passed the builtin battery but broke the
+varshney and herm connectomes into a backward drift attractor, the
+softer boundary was reverted. the posterior third stays quiet, the
+wave span sits near 0.4 body lengths.
 
 known residual gaps:
 - wavelength near 0.4 body length, target 0.5 to 1.0. the wave span

@@ -7,11 +7,11 @@ CPPFLAGS = -D_DEFAULT_SOURCE
 LDLIBS   = -lm
 
 BIN = elegans
-SRC = src/main.c src/sim.c src/connectome.c src/neuron.c src/body.c \
+SRC = src/main.c src/tui.c src/sim.c src/connectome.c src/neuron.c src/body.c \
       src/world.c src/modulators.c src/plasticity.c src/metrics.c src/rng.c \
       src/evolution.c
 OBJ = $(SRC:.c=.o)
-HDR = src/config.h src/sim.h
+HDR = $(wildcard src/*.h)
 
 all: $(BIN)
 

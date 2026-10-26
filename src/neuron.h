@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "rng.h"
 
-#define MAX_NEURONS     512   /* 302 neurons plus muscle nodes, headroom */
+#define MAX_NEURONS     640   /* herm 302 plus muscles, male 579 nodes, headroom */
 #define NEURON_NAME_MAX 12    /* fits body wall muscle names like bwm-dl01 */
 #define MAX_DELAY_STEPS 64    /* 64 ms ring of delayed presynaptic activation */
 

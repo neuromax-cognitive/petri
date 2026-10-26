@@ -34,10 +34,15 @@ void nervous_init(nervous_t* ns, rng_t* rng)
     ns->n = 0;
     ns->hist_head = 0;
     memset(ns->act_hist, 0, sizeof(ns->act_hist));
+    (void)rng;
+    /* no rng here: the pool is capacity sized and the per step noise must
+       land on the same stream positions no matter how much headroom the
+       pool has, otherwise changing max neurons would silently reseed the
+       whole run */
     for (i = 0; i < MAX_NEURONS; i++) {
         neuron_t* c = &ns->cells[i];
         memset(c, 0, sizeof(*c));
-        c->v = V_REST_MV + 2.0f * rng_normal(rng);
+        c->v = V_REST_MV;
         c->v_rest = V_REST_MV;
         c->tau_base = 25.0f;
         c->homeo = 1.0f;

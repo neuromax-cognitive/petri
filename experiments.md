@@ -102,3 +102,36 @@ unnamed in that reconstruction). the first reconstruction divergence
 that is large enough to matter: herm302 crawls 24 percent further than
 varshney under identical body and mechanics. the a/b/c harness in
 run_all.sh re-emits this table.
+
+## round 3: male connectome, terminal dashboard, ablation table
+
+three additions and one determinism trap. the trap: the neuron pool
+initializer drew a random start potential per pool cell, max neurons
+included, so raising the pool size for the male connectome shifted the
+noise stream and silently reseeded every run. fixed by drawing nothing
+at init, per step noise stays on its stream positions. baselines
+re-blessed, battery now 8 of 10 seeds.
+
+male connectome: cook et al 2019 corrected supplement, sheets male
+chemical and male gap jn symmetric, converted by
+tools/convert_cook2019_male.py into cook2019_male.csv, 588 nodes,
+7025 synapses. the male crawls forward at 0.20 mm/s run speed with a
+clean straight tail, in the same band as the hermaphrodite
+reconstructions. the same body, the same physics.
+
+cross connectome, 120 s seed 1, net mm: builtin 8.4, varshney 8.7,
+herm302 7.7, male 6.9, witvliet 0.0 (motor neurons unnamed). the
+reconstructions now express behavioral differences that are worth
+chasing rather than noise.
+
+ablations against the laser ablation literature went into
+validation.md with three seed medians: the gait survives command
+interneuron removal (fouad 2018 would agree), but speeds up 1.3 to
+2.3 times where life slows down. sharpest open divergence on the
+bench.
+
+terminal dashboard: src/tui.c, hand rolled ansi glyph grid, world
+panel with the worm colored by local bend, state panel with neural
+and modulator bars, live curvature kymograph, compact fallback for
+small terminals. still zero dependencies, still no allocation in the
+loop, headless output byte identical to before.

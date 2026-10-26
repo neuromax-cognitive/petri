@@ -184,6 +184,11 @@ mechanosensory synapses on contact. graded, no mode switches.
   about the same level the touch path drives the a pools. candidates for
   closing the gap: evolution over the command weights (--evolve), or a
   longer mechanoreceptor relaxation constant
+- interactive terminal dashboard, hand rolled ansi, no ncurses: world
+  view with the worm colored by local bend, state panel with neural and
+  modulator bars, and a live curvature kymograph that shows the
+  traveling wave. keys: q quit, p pause, t tap, f food, plus and minus
+  simulation speed. compact fallback for small terminals
 - the cpg is a stretch reflex, not a copy chain. b class motor neurons
   read the stretch of their own side a few segments behind, a class
   reads ahead (wen 2012, fieseler kunert-graf kutz 2018), the drive is a
@@ -212,9 +217,17 @@ not "another worm simulator". petri is a falsifiable test bench for
 connectome to behavior hypotheses: one binary, c99, zero dependencies,
 deterministic, every claim is a script plus csv plus seed. the flagship
 experiment nobody else ships: the same body and mechanics run against
-three published connectome reconstructions and the behavioral
-divergence of the reconstructions is measured. a difference between
-datasets is a result, so is their agreement.
+four published connectome reconstructions, hermaphrodite adult and l4
+plus the full male (cook 2019, 588 nodes), and the behavioral
+divergence of the reconstructions is measured. current table, 120 s
+seed 1, net mm: builtin 8.4, varshney 8.7, herm302 7.7, male 6.9,
+witvliet 0.0 (motor neurons unnamed in that reconstruction). a
+difference between datasets is a result, so is their agreement.
+
+the sharpest current divergence against reality sits in the ablation
+table: the model agrees with fouad 2018 that the gait survives command
+interneuron ablation, but predicts the crawl speeds up 1.3 to 2.3
+times while life slows down. details in validation.md.
 
 development is ai assisted and declared: code drafted with llm
 assistance, every change gated by tests/run_tests.sh and human review,
@@ -225,9 +238,9 @@ citations audited against the literature, limitations kept public.
 | phase | content | exit criterion | status |
 |---|---|---|---|
 | 0 | ci, run_all.sh, frozen csv contract, results/ | make test green, one command reproduction | done |
-| 1 | calibration sweep to the target phenotype vector | t1 gates pass on 8 of 10 seeds, calibration.md | done: 9 of 10 seeds pass, one seed under the speed floor, see calibration.md |
-| 2 | literature validation table (yemini 2013, wen 2012, kunert 2017) | validate.py emits match and mismatch rows | done: 1 match 4 mismatch, honest |
-| 3 | flagship: ablation matrix, proprioceptive gain sweep, tap habituation fit, cross connectome a/b/c | figures in results/, experiments.md | done as harness, biological claims pending phase 1 criterion |
+| 1 | calibration sweep to the target phenotype vector | t1 gates pass on 8 of 10 seeds, calibration.md | done: 8 of 10 seeds pass, two under the speed floor, see calibration.md |
+| 2 | literature validation table (yemini 2013, wen 2012, kunert 2017) | validate.py emits match and mismatch rows | done: 4 match 1 mismatch, plus ablation table with a live divergence |
+| 3 | flagship: ablation matrix, proprioceptive gain sweep, tap habituation fit, cross connectome a/b/c | figures in results/, experiments.md | done: cross connectome table live, ablation divergence documented |
 | 4 | associative conditioning protocol | paired vs control preference curve | protocol done, honest null: ci 0.000 all arms |
 | 5 | methods draft, benchmark note, zenodo doi, CITATION.cff | citable v1.0 | drafts done, tagged v0.1.0, zenodo upload is manual |
 
