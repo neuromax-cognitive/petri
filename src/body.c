@@ -316,18 +316,33 @@ void body_step(body_t* b, nervous_t* ns, float nmj_gain, float dt)
     force_balance(b, lx, ly, dt);
 
     /* integrate the rigid frame, then rebuild the global skeleton */
-    b->head_x += b->vx * dt;
-    b->head_y += b->vy * dt;
-    /* the assay plate has a plastic rim, the frame cannot penetrate it.
-       clamping the head point is the wall reaction, the shape keeps
-       moving so a worm that pushes into the wall slides along it while
-       the contact keeps feeding ash and alm */
-    if (b->head_x < WORLD_CELL_MM) b->head_x = WORLD_CELL_MM;
-    if (b->head_y < WORLD_CELL_MM) b->head_y = WORLD_CELL_MM;
-    if (b->head_x > WORLD_W_MM - WORLD_CELL_MM)
-        b->head_x = WORLD_W_MM - WORLD_CELL_MM;
-    if (b->head_y > WORLD_H_MM - WORLD_CELL_MM)
-        b->head_y = WORLD_H_MM - WORLD_CELL_MM;
+    {
+        float ox = b->head_x, oy = b->head_y;
+        if (b->nose_contact || b->tail_contact) {
+            /* grinding against the plastic rim costs speed, the contact
+               flags are one step old which is fine at this time scale */
+            b->vx *= WALL_FRICTION;
+            b->vy *= WALL_FRICTION;
+        }
+        b->head_x += b->vx * dt;
+        b->head_y += b->vy * dt;
+        /* the assay plate has a plastic rim, the frame cannot penetrate
+           it. clamping the head point is the wall reaction, the shape
+           keeps moving so a worm that pushes into the wall slides along
+           it while the contact keeps feeding ash and alm. the velocity
+           is rebuilt from the actual displacement afterwards, the raw
+           frame velocity of a wall pressed worm would fake a permanent
+           crawl into the wall and every metric downstream would read
+           it as a reversal */
+        if (b->head_x < WORLD_CELL_MM) b->head_x = WORLD_CELL_MM;
+        if (b->head_y < WORLD_CELL_MM) b->head_y = WORLD_CELL_MM;
+        if (b->head_x > WORLD_W_MM - WORLD_CELL_MM)
+            b->head_x = WORLD_W_MM - WORLD_CELL_MM;
+        if (b->head_y > WORLD_H_MM - WORLD_CELL_MM)
+            b->head_y = WORLD_H_MM - WORLD_CELL_MM;
+        b->vx = (b->head_x - ox) / dt;
+        b->vy = (b->head_y - oy) / dt;
+    }
     b->head_angle += b->omega * dt;
     b->last_drot = b->omega * dt;
     if (b->head_angle > 6.2831853f) b->head_angle -= 6.2831853f;

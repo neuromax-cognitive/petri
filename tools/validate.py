@@ -36,9 +36,24 @@ def measure(csv_path):
     out["curvature_amplitude_inv_mm"] = math.sqrt(
         sum((x - mean) ** 2 for x in kh) / n)
     out["body_length_mm"] = 1.0
-    # reversal duration: total time with nose directed speed below -0.02
-    rev_steps = sum(1 for v in vel if v < -0.02)
-    out["reversal_duration_s"] = rev_steps * 0.1
+    # reversal duration: median length of one contiguous backward episode,
+    # the old code summed all backward time and compared it against a per
+    # episode range, which reported every wall press as a giant reversal
+    durs, cur = [], 0
+    for v in vel:
+        if v < -0.02:
+            cur += 1
+        else:
+            if cur:
+                durs.append(cur * 0.1)
+            cur = 0
+    if cur:
+        durs.append(cur * 0.1)
+    # a reversal event is an episode of at least 0.5 s, sub threshold
+    # blips are not reversals in the behavioral literature either
+    durs = [d for d in durs if d >= 0.5]
+    durs.sort()
+    out["reversal_duration_s"] = durs[len(durs) // 2] if durs else 0.0
     out["_net_mm"] = math.hypot(lx - sx, ly - sy)
     out["_tail_bias"] = sum(kt) / n
     return out

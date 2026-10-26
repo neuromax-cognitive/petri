@@ -55,7 +55,7 @@ static const float DA_G_MECH_SCALE = 0.5f;   /* da shunts mechanosensory synapse
 static const float BODY_LEN_MM    = 1.0f;    /* adult hermaphrodite, mm */
 static const float K_MAX_INV_MM   = 12.0f;   /* max curvature, 1/mm, cuticle limit */
 static const float TAU_BEND_MS    = 220.0f;  /* cuticle viscoelastic relaxation, ms, approx raised from 110 to slow the loop into the target period */
-static const float BEND_GAIN      = 5.8f;
+static const float BEND_GAIN      = 6.0f;
 static const float BOUNDARY_DAMP  = 3.0f;
 static const int   BOUNDARY_SEG   = 3;
 static const float DRAG_T         = 0.021f;  /* tangential drag per segment, uN*s/mm */
@@ -88,6 +88,7 @@ static const float THERMO_G           = 2.5f; /* per degree c */
 static const float MEC_G            = 10.0f;
 static const float MEC_TAU_MS         = 800.0f; /* mechanoreceptor relaxation, ms */
 static const float ASH_TAU_MS         = 2500.0f;
+static const float WALL_FRICTION     = 0.65f; /* tangential drag against the plastic rim, without it the rim is a frictionless rail and the wall gait outruns agar */
 static const float TAP_MS             = 300.0f; /* mechanical tap duration, ms */
 
 /* world */

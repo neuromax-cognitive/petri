@@ -238,8 +238,8 @@ citations audited against the literature, limitations kept public.
 | phase | content | exit criterion | status |
 |---|---|---|---|
 | 0 | ci, run_all.sh, frozen csv contract, results/ | make test green, one command reproduction | done |
-| 1 | calibration sweep to the target phenotype vector | t1 gates pass on 8 of 10 seeds, calibration.md | re-opened by the dish wall: 4 of 10 seeds on the bounded dish, blocker is the reversal duration defect |
-| 2 | literature validation table (yemini 2013, wen 2012, kunert 2017) | validate.py emits match and mismatch rows | done: 4 match 1 mismatch, plus ablation table with a live divergence |
+| 1 | calibration sweep to the target phenotype vector | t1 gates pass on 8 of 10 seeds, calibration.md | done: 10 of 10 seeds on the bounded dish, see calibration.md |
+| 2 | literature validation table (yemini 2013, wen 2012, kunert 2017) | validate.py emits match and mismatch rows | done: 5 match 0 mismatch, plus the ablation table with a live divergence |
 | 3 | flagship: ablation matrix, proprioceptive gain sweep, tap habituation fit, cross connectome a/b/c | figures in results/, experiments.md | done: cross connectome table live, ablation divergence documented |
 | 4 | associative conditioning protocol | paired vs control preference curve | protocol done, honest null: ci 0.000 all arms |
 | 5 | methods draft, benchmark note, zenodo doi, CITATION.cff | citable v1.0 | drafts done, tagged v0.1.0, zenodo upload is manual |

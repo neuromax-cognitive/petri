@@ -135,3 +135,24 @@ panel with the worm colored by local bend, state panel with neural
 and modulator bars, live curvature kymograph, compact fallback for
 small terminals. still zero dependencies, still no allocation in the
 loop, headless output byte identical to before.
+
+## round 4: honest velocity, the frictionless rim, full validation
+
+two measurement bugs fell in one day. the reported speed used the raw
+frame velocity before the wall clamp, so wall presses looked like
+permanent crawls and inflated both the reversal detector and the seed
+battery. velocity is rebuilt from actual displacement now. and
+validate.py had compared the total backward time of a run against a
+per episode literature range; it now reports the median episode of at
+least 0.5 s. real reversal episodes measure 0.6 to 1.2 s, the phase 2
+table is 5 match, 0 mismatch for the first time.
+
+the rim also turned out to be a frictionless rail: pressing into it
+removed the anisotropic drag and the wall gait outran agar. wall
+friction 0.65 plus bend gain 6.0 merged the two gait modes into one,
+the bounded dish battery reads 10 of 10 seeds (speed 0.23 to 0.25
+mm/s, amplitude 2.4 to 2.5 1/mm, period 0.94 to 1.01 s, tail curl 0).
+
+open: rim hugging, 95 percent of a 600 s run on the perimeter and no
+food lawn visits. corner stays are bounded (149 s worst) but the
+perimeter obsession is the next behavioral defect on the list.

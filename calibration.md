@@ -1,5 +1,35 @@
 # calibration log, phase 1
 
+## round 6, two metric bugs and a frictionless rail
+
+three finds, two of them tooling. first, the reported worm speed came
+from the raw frame velocity before the wall clamp, so a worm pressed
+against the rim reported a permanent crawl into the wall and the
+reversal detector read wall presses as giant reversals. the velocity is
+now rebuilt from the actual displacement after the clamp. real
+reversal episodes turned out to be 0.6 to 1.2 s, inside the rankin and
+broster range all along. second, validate.py summed all backward time
+in a run and compared it against a per episode range, the metric now
+reports the median episode of at least 0.5 s. the phase 2 table reads
+5 match, 0 mismatch. third, the rim acted as a frictionless rail: a
+worm pressing into it lost the anisotropic drag and its wall gait
+outran agar, which fed the fast gait mode. wall friction 0.65 plus
+bend gain 6.0 merged the two gaits into one at 0.24 mm/s.
+
+battery on the bounded dish, release build, 10 of 10 seeds pass:
+speed 0.231 to 0.248 mm/s, amplitude 2.40 to 2.47 1/mm, period 0.94
+to 1.01 s, tail curl 0.00 in every seed. cross connectome: builtin
+7.1, varshney 9.1, herm302 7.6, male 6.3 mm net per 120 s.
+
+still open: the worm hugs the rim 95 percent of the time in a 600 s
+run (corner 48 percent, wall 47 percent) and reached the food lawn
+0 percent in that run. corner stays are bounded now (longest 149 s,
+was 313 s) but the perimeter obsession is real. suspected root: the
+clamp constrains every touch into tangential motion and nothing in the
+circuit turns the heading inward. next candidate: make the reversal
+re-entry angle depend on the wave phase, which is circuit and not a
+rule.
+
 ## round 5, the corners stop holding the worm
 
 the wall touch fed ash with a step that lasted as long as the contact,
